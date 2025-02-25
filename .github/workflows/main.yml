@@ -1,0 +1,113 @@
+name: Deploy code On server
+
+on:
+  push:
+    branches:
+      - dev
+      - main
+jobs: 
+  deploy-code-on-dev-server:
+    name: Deploy to DEV Server
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/dev'
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Install Dependencies
+        run: npm i -f
+
+      - name: Remove Production ENV
+        run:  rm .env.production   
+
+      - name: Dev env name changed to Prod.
+        run:  mv .env.development .env.production  
+      
+
+      - name: Build Project
+        run: npm run build
+
+      - name: Prepare Deployment Folder
+        run: |
+          mkdir -p deployment
+          rsync -av --exclude='node_modules' .next/standalone/ deployment/
+          cp -r .next/static deployment/.next/static
+          cp -r public deployment/
+
+      - name: Deploy to Dev server
+        uses: cross-the-world/ssh-scp-ssh-pipelines@v1.1.4
+        with:
+          pass: ${{ secrets.PASSWORD }}
+          user: ${{ secrets.USERNAME }}
+          host: ${{ secrets.HOSTNAME }}
+          scp: |
+            ./deployment/* => /var/www/html/dreams/
+            ./deployment/.next/* => /var/www/html/dreams/.next/
+
+      # Step 6: Install dependencies on the server
+      - name: Install Node Modules on Server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOSTNAME }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          script: |
+            cd /var/www/html/dreams/
+            npm i -f
+            sed -i 's/|| 3000/|| 3003/' /var/www/html/dreams/server.js
+            pm2 restart dreamsnextjsproject
+
+      - name: Clean Up
+        run: rm -rf deployment
+
+  deploy-code-on-Main-server:
+    name: Deploy to MAIN Server
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Install Dependencies
+        run: npm i -f      
+
+      - name: Build Project
+        run: npm run build
+
+      - name: Prepare Deployment Folder
+        run: |
+          mkdir -p deployment
+          rsync -av --exclude='node_modules' .next/standalone/ deployment/
+          cp -r .next/static deployment/.next/static
+          cp -r public deployment/
+
+      - name: Deploy to MAIN server
+        uses: cross-the-world/ssh-scp-ssh-pipelines@v1.1.4
+        with:
+          pass: ${{ secrets.MainPASSWORD }}
+          user: ${{ secrets.MainUSERNAME }}
+          host: ${{ secrets.MainHOSTNAME }}
+          scp: |
+            ./deployment/* => /var/www/html/dashboard
+            ./deployment/.next/* => /var/www/html/dashboard/.next/
+            ./deployment/.en* => /var/www/html/dashboard
+
+
+      # Step 6: Install dependencies on the server
+      - name: Install Node Modules on MAIN Server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.MainHOSTNAME }}
+          username: ${{ secrets.MainUSERNAME }}
+          password: ${{ secrets.MainPASSWORD }}
+          script: |
+            cd /var/www/html/dashboard/
+            npm i -f
+            pm2 restart dreamsnextjsproject
+
+      - name: Clean Up
+        run: rm -rf deployment

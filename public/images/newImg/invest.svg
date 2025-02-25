@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <!-- Background Circle -->
+    <circle cx="100" cy="100" r="90" fill="#f8f9fa" stroke="#4A308C" stroke-width="2"/>
+    
+    <!-- Building Icon -->
+    <rect x="60" y="70" width="80" height="100" fill="#4A308C" rx="4"/>
+    <rect x="70" y="80" width="20" height="20" fill="white" rx="2"/>
+    <rect x="110" y="80" width="20" height="20" fill="white" rx="2"/>
+    <rect x="70" y="110" width="20" height="20" fill="white" rx="2"/>
+    <rect x="110" y="110" width="20" height="20" fill="white" rx="2"/>
+    <rect x="70" y="140" width="20" height="20" fill="white" rx="2"/>
+    <rect x="110" y="140" width="20" height="20" fill="white" rx="2"/>
+    
+    <!-- Token Symbol -->
+    <circle cx="150" cy="50" r="20" fill="#CB4392"/>
+    <text x="150" y="58" font-family="Arial" font-size="20" fill="white" text-anchor="middle">₿</text>
+</svg>

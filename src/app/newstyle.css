@@ -1,0 +1,62 @@
+
+:root {
+    --default-font: "Roboto",  system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --heading-font: "Raleway",  sans-serif;
+    --nav-font: "Poppins",  sans-serif;
+  }
+  
+  :root { 
+    --background-color: #ffffff; 
+    --default-color: #555555;
+    --heading-color: #222222;
+    --accent-color: #4A308C; 
+    --surface-color: #ffffff; 
+    --contrast-color: #ffffff; 
+    --nav-color: #555555;  
+    --nav-hover-color: #4A308C; 
+    --nav-mobile-background-color: #ffffff;
+    --nav-dropdown-background-color: #ffffff; 
+    --nav-dropdown-color: #555555; 
+    --nav-dropdown-hover-color: #4A308C; 
+    --footer-background: #060606;
+    --footer-color: #B5B5B5;
+    --foote-heading-color: #ffffff;
+  }
+  
+  
+  /* Smooth scroll */
+  :root {
+    scroll-behavior: smooth;
+  }
+  
+
+  body {
+    color: var(--default-color);
+    background-color: var(--background-color);
+    font-family: var(--default-font);
+  }
+  
+  a {
+    color: var(--accent-color);
+    text-decoration: none;
+    transition: 0.3s;
+  }
+  
+  a:hover {
+    color: color-mix(in srgb, var(--accent-color), transparent 25%);
+    text-decoration: none;
+  }
+  
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: var(--heading-color);
+    font-family: var(--heading-font);
+  }
+  
+
+
+    
