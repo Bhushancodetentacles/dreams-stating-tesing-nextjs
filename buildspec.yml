@@ -1,0 +1,15 @@
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      nodejs: latest
+    commands:
+      - npm install
+      - npm run build
+  post_build:
+    commands:
+      - zip -r build.zip .
+      - aws s3 cp build.zip s3://dreams-staging-backet/build.zip
+artifacts:
+  files:
+    - '**/*'
