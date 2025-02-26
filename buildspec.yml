@@ -1,4 +1,5 @@
 version: 0.2
+
 phases:
   install:
     runtime-versions:
@@ -6,10 +7,23 @@ phases:
     commands:
       - npm install -f
       - npm run build
+
+  build:
+    commands:
+      # Create the 'deployment' directory and copy the necessary files into it
+      - mkdir -p deployment
+      - rsync -av --exclude='node_modules' .next/standalone/ deployment/
+      - cp -r .next/static deployment/.next/static
+      - cp -r public deployment/
+      
+      # Create the build.zip file from the deployment folder
+      - zip -r build.zip deployment/
+
   post_build:
     commands:
-      - zip -r build.zip .
+      # Upload the zip file to S3
       - aws s3 cp build.zip s3://dreams-staging-backet/build.zip
+
 artifacts:
   files:
     - '**/*'
