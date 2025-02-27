@@ -2,7 +2,7 @@
 set -e  # Exit immediately if any command fails
 
 # Variables
-S3_BUCKET="s3://dreams-staging-backet/testing/build.zip"
+S3_BUCKET="s3://dreams-staging-backet/frontend/build.zip"
 DEPLOY_DIR="/var/www/html"
 TMP_DIR="/tmp/deployment"
 
