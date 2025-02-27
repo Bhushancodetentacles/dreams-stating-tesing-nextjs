@@ -18,12 +18,14 @@ phases:
       
       # Create the build.zip file from the deployment folder
       - zip -r build.zip deployment/
+      - zip build.zip appspec.yml
+      - zip build.zip scripts/*
 
   post_build:
     commands:
       # Upload the zip file to S3
-      - aws s3 cp build.zip s3://dreams-staging-backet/build.zip
+      - aws s3 cp build.zip s3://dreams-staging-backet/frontend/build.zip
 
 artifacts:
   files:
-    - '**/*'
+    - build.zip
