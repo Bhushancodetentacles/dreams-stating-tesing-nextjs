@@ -6,10 +6,10 @@ S3_BUCKET="s3://dreams-staging-backet/frontend/build.zip"
 DEPLOY_DIR="/var/www/html"
 TMP_DIR="/tmp/deployment"
 
-# Install unzip if not installed
-sudo apt update && sudo apt install -y unzip awscli
+# Install required packages if not installed
+sudo apt update && sudo apt install -y unzip awscli rsync
 
-# Clean up previous deployment if any
+# Clean up previous temp deployment folder
 sudo rm -rf "$TMP_DIR"
 mkdir -p "$TMP_DIR"
 
@@ -17,15 +17,15 @@ mkdir -p "$TMP_DIR"
 aws s3 cp "$S3_BUCKET" /tmp/build.zip
 
 # Unzip the file
-unzip /tmp/build.zip -d "$TMP_DIR"
+unzip -o /tmp/build.zip -d "$TMP_DIR"
 
-# Enable moving hidden files (.*)
-shopt -s dotglob
+# Ensure we copy all files, including hidden ones, and overwrite only changed files
+sudo rsync -av --progress "$TMP_DIR/deployment/" "$DEPLOY_DIR/"
 
-# Move all extracted files (including hidden files/folders) to the deploy directory
-sudo rm -rf "$DEPLOY_DIR/*"
-sudo mv "$TMP_DIR/deployment/"* "$DEPLOY_DIR/"
+# Install Node.js dependencies if applicable
+if [ -f "$DEPLOY_DIR/package.json" ]; then
+    npm install --prefix "$DEPLOY_DIR"
+fi
 
-npm install --prefix "$DEPLOY_DIR"
+echo "Deployment completed successfully!"
 
-echo "Files (including hidden files) deployed successfully!"
